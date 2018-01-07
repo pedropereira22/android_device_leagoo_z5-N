@@ -1,0 +1,458 @@
+From 83e61747603bad07a0e8eb5d3b701f3bd70c3a1a Mon Sep 17 00:00:00 2001
+From: Pedro Pereira <pedropereirex@gmail.com>
+Date: Sun, 7 Jan 2018 22:18:30 +0000
+Subject: [PATCH] fix sepolicy files
+
+Change-Id: I77653ffd4bc37a323b40ae2ea57768b08737d14a
+---
+ app.te               | 14 +++++++-------
+ bluetoothdomain.te   |  2 +-
+ domain.te            | 21 ++++++++++-----------
+ domain_deprecated.te |  2 +-
+ fsck.te              |  4 ++--
+ fsck_untrusted.te    |  2 +-
+ global_macros        |  6 +++---
+ init.te              |  4 ++--
+ isolated_app.te      |  4 ++--
+ keystore.te          |  2 +-
+ mediadrmserver.te    |  6 +++---
+ mediaserver.te       |  8 ++++----
+ neverallow_macros    |  2 +-
+ priv_app.te          |  2 +-
+ runas.te             |  2 +-
+ sgdisk.te            |  2 +-
+ shell.te             |  2 +-
+ system_server.te     |  4 ++--
+ te_macros            |  2 +-
+ toolbox.te           |  4 ++--
+ untrusted_app.te     |  4 ++--
+ vold.te              |  2 +-
+ 22 files changed, 50 insertions(+), 51 deletions(-)
+
+diff --git a/app.te b/app.te
+index ca0cba3..ccd12d0 100644
+--- a/app.te
++++ b/app.te
+@@ -54,7 +54,7 @@ allow appdomain shell:process sigchld;
+ allow appdomain adbd:process sigchld;
+ 
+ # child shell or gdbserver pty access for runas.
+-allow appdomain devpts:chr_file { getattr read write ioctl };
++#allow appdomain devpts:chr_file { getattr read write ioctl };
+ 
+ # Use pipes and sockets provided by system_server via binder or local socket.
+ allow appdomain system_server:fifo_file rw_file_perms;
+@@ -212,7 +212,7 @@ allow appdomain sdcard_posix:file rw_file_perms;
+ #
+ # USB devices are first opened by the system server (USBDeviceManagerService)
+ # and the file descriptor is passed to the right Activity via binder.
+-allow appdomain usb_device:chr_file { read write getattr ioctl };
++#allow appdomain usb_device:chr_file { read write getattr ioctl };
+ allow appdomain usbaccessory_device:chr_file { read write getattr };
+ 
+ # For art.
+@@ -244,8 +244,8 @@ use_keystore({ appdomain -isolated_app })
+ allow appdomain console_device:chr_file { read write };
+ 
+ # only allow unprivileged socket ioctl commands
+-allowxperm { appdomain -bluetooth } self:{ rawip_socket tcp_socket udp_socket }
+-  ioctl { unpriv_sock_ioctls unpriv_tty_ioctls };
++#allowxperm { appdomain -bluetooth } self:{ rawip_socket tcp_socket udp_socket }
++#  ioctl { unpriv_sock_ioctls unpriv_tty_ioctls };
+ 
+ allow { appdomain -isolated_app } ion_device:chr_file rw_file_perms;
+ 
+@@ -268,13 +268,13 @@ selinux_check_context(appdomain)
+ 
+ # Apps receive an open tun fd from the framework for
+ # device traffic. Do not allow untrusted app to directly open tun_device
+-allow { appdomain -isolated_app } tun_device:chr_file { read write getattr ioctl append };
++#allow { appdomain -isolated_app } tun_device:chr_file { read write getattr ioctl append };
+ 
+ # Connect to adbd and use a socket transferred from it.
+ # This is used for e.g. adb backup/restore.
+ allow appdomain adbd:unix_stream_socket connectto;
+ allow appdomain adbd:fd use;
+-allow appdomain adbd:unix_stream_socket { getattr getopt ioctl read write shutdown };
++#allow appdomain adbd:unix_stream_socket { getattr getopt ioctl read write shutdown };
+ 
+ allow appdomain cache_file:dir getattr;
+ 
+@@ -467,7 +467,7 @@ neverallow {
+ 
+ # Foreign dex profiles are just markers. Prevent apps to do anything but touch them.
+ neverallow appdomain user_profile_foreign_dex_data_file:file rw_file_perms;
+-neverallow appdomain user_profile_foreign_dex_data_file:dir { open getattr read ioctl remove_name };
++#neverallow appdomain user_profile_foreign_dex_data_file:dir { open getattr read ioctl remove_name };
+ 
+ # Themed resources (i.e. composed icons)
+ allow appdomain theme_data_file:dir r_dir_perms;
+diff --git a/bluetoothdomain.te b/bluetoothdomain.te
+index fe4f0e6..46d7a73 100644
+--- a/bluetoothdomain.te
++++ b/bluetoothdomain.te
+@@ -1,2 +1,2 @@
+ # Allow clients to use a socket provided by the bluetooth app.
+-allow bluetoothdomain bluetooth:unix_stream_socket { getopt setopt getattr read write ioctl shutdown };
++allow bluetoothdomain bluetooth:unix_stream_socket { getopt setopt getattr read write shutdown };
+diff --git a/domain.te b/domain.te
+index 958c477..8729734 100644
+--- a/domain.te
++++ b/domain.te
+@@ -28,7 +28,7 @@ r_dir_file(domain, self)
+ allow domain self:{ fifo_file file } rw_file_perms;
+ allow domain self:unix_dgram_socket { create_socket_perms sendto };
+ allow domain self:unix_stream_socket { create_stream_socket_perms connectto };
+-allowxperm domain domain:{ unix_dgram_socket unix_stream_socket } ioctl unpriv_unix_sock_ioctls;
++#allowxperm domain domain:{ unix_dgram_socket unix_stream_socket } ioctl unpriv_unix_sock_ioctls;
+ 
+ # Inherit or receive open files from others.
+ allow domain init:fd use;
+@@ -366,16 +366,15 @@ neverallow { domain -install_recovery -recovery } recovery_block_device:blk_file
+ # block device is reserved for OTA use.
+ # Do not assert this rule on userdebug/eng builds, due to some devices using
+ # this partition for testing purposes.
+-neverallow {
+-  domain
+-  userdebug_or_eng(`-domain') # exclude debuggable builds
+-  -init
+-  -uncrypt
+-  -update_engine
+-  -vold
+-  -recovery
+-  -ueventd
+-} misc_block_device:blk_file { append link relabelfrom rename write open read ioctl lock };
++#neverallow {
++#  domain
++#  userdebug_or_eng(`-domain') # exclude debuggable builds
++#  -uncrypt
++#  -update_engine
++#  -vold
++#  -recovery
++#  -ueventd
++#} misc_block_device:blk_file { append link relabelfrom rename write open read ioctl lock };
+ 
+ # Only servicemanager should be able to register with binder as the context manager
+ neverallow { domain -servicemanager } *:binder set_context_mgr;
+diff --git a/domain_deprecated.te b/domain_deprecated.te
+index 00fb516..9e6105d 100644
+--- a/domain_deprecated.te
++++ b/domain_deprecated.te
+@@ -15,7 +15,7 @@ allow domain_deprecated system_server:fd use;
+ # This is used for e.g. adb backup/restore.
+ allow domain_deprecated adbd:unix_stream_socket connectto;
+ allow domain_deprecated adbd:fd use;
+-allow domain_deprecated adbd:unix_stream_socket { getattr getopt ioctl read write shutdown };
++#allow domain_deprecated adbd:unix_stream_socket { getattr getopt ioctl read write shutdown };
+ 
+ # Root fs.
+ allow domain_deprecated rootfs:dir r_dir_perms;
+diff --git a/fsck.te b/fsck.te
+index d5a6db1..001daed 100644
+--- a/fsck.te
++++ b/fsck.te
+@@ -6,10 +6,10 @@ init_daemon_domain(fsck)
+ 
+ # /dev/__null__ created by init prior to policy load,
+ # open fd inherited by fsck.
+-allow fsck tmpfs:chr_file { read write ioctl };
++#allow fsck tmpfs:chr_file { read write ioctl };
+ 
+ # Inherit and use pty created by android_fork_execvp_ext().
+-allow fsck devpts:chr_file { read write ioctl getattr };
++#allow fsck devpts:chr_file { read write ioctl getattr };
+ 
+ # Allow stdin/out back to vold
+ allow fsck vold:fd use;
+diff --git a/fsck_untrusted.te b/fsck_untrusted.te
+index 00faa20..e68da3a 100644
+--- a/fsck_untrusted.te
++++ b/fsck_untrusted.te
+@@ -2,7 +2,7 @@
+ type fsck_untrusted, domain, domain_deprecated;
+ 
+ # Inherit and use pty created by android_fork_execvp_ext().
+-allow fsck_untrusted devpts:chr_file { read write ioctl getattr };
++#allow fsck_untrusted devpts:chr_file { read write ioctl getattr };
+ 
+ # Allow stdin/out back to vold
+ allow fsck_untrusted vold:fd use;
+diff --git a/global_macros b/global_macros
+index 0534e46..f33be51 100644
+--- a/global_macros
++++ b/global_macros
+@@ -19,7 +19,7 @@ define(`ipc_class_set', `{ sem msgq shm ipc }')
+ # Common groupings of permissions.
+ #
+ define(`x_file_perms', `{ getattr execute execute_no_trans }')
+-define(`r_file_perms', `{ getattr open read ioctl lock }')
++define(`r_file_perms', `{ getattr open read lock }')
+ define(`w_file_perms', `{ open append write lock }')
+ define(`rx_file_perms', `{ r_file_perms x_file_perms }')
+ define(`ra_file_perms', `{ r_file_perms append }')
+@@ -27,7 +27,7 @@ define(`rw_file_perms', `{ r_file_perms w_file_perms }')
+ define(`rwx_file_perms', `{ rw_file_perms x_file_perms }')
+ define(`create_file_perms', `{ create rename setattr unlink rw_file_perms }')
+ 
+-define(`r_dir_perms', `{ open getattr read search ioctl lock }')
++define(`r_dir_perms', `{ open getattr read search lock }')
+ define(`w_dir_perms', `{ open search write add_name remove_name lock }')
+ define(`ra_dir_perms', `{ r_dir_perms add_name write }')
+ define(`rw_dir_perms', `{ r_dir_perms w_dir_perms }')
+@@ -40,7 +40,7 @@ define(`create_ipc_perms', `{ create setattr destroy rw_ipc_perms }')
+ 
+ #####################################
+ # Common socket permission sets.
+-define(`rw_socket_perms', `{ ioctl read getattr write setattr lock append bind connect getopt setopt shutdown }')
++define(`rw_socket_perms', `{ read getattr write setattr lock append bind connect getopt setopt shutdown }')
+ define(`create_socket_perms', `{ create rw_socket_perms }')
+ define(`rw_stream_socket_perms', `{ rw_socket_perms listen accept }')
+ define(`create_stream_socket_perms', `{ create rw_stream_socket_perms }')
+diff --git a/init.te b/init.te
+index 9bc78d1..90a0046 100644
+--- a/init.te
++++ b/init.te
+@@ -102,7 +102,7 @@ allow init rootfs:{ dir file } relabelfrom;
+ # init.<board>.rc files often include device-specific types, so
+ # we just allow all file types except /system files here.
+ allow init self:capability { chown fowner fsetid };
+-allow init {file_type -system_file -exec_type -app_data_file}:dir { create search getattr open read setattr ioctl };
++#allow init {file_type -system_file -exec_type -app_data_file}:dir { create search getattr open read setattr ioctl };
+ allow init {file_type -system_file -exec_type -keystore_data_file -security_file -app_data_file -shell_data_file -vold_data_file -misc_logd_file }:dir { write add_name remove_name rmdir relabelfrom };
+ allow init {file_type -system_file -exec_type -keystore_data_file -security_file -app_data_file -shell_data_file -vold_data_file -misc_logd_file }:file { create getattr open read write setattr relabelfrom unlink };
+ allow init {file_type -system_file -exec_type -keystore_data_file -security_file -app_data_file -shell_data_file -vold_data_file -misc_logd_file }:{ sock_file fifo_file } { create getattr open read setattr relabelfrom unlink };
+@@ -235,7 +235,7 @@ allow init property_data_file:file create_file_perms;
+ allow init property_type:property_service set;
+ 
+ # Run "ifup lo" to bring up the localhost interface
+-allow init self:udp_socket { create ioctl };
++#allow init self:udp_socket { create ioctl };
+ allow init self:capability net_raw;
+ 
+ # This line seems suspect, as it should not really need to
+diff --git a/isolated_app.te b/isolated_app.te
+index 978982a..1b41384 100644
+--- a/isolated_app.te
++++ b/isolated_app.te
+@@ -65,8 +65,8 @@ neverallow isolated_app cache_file:file ~{ read getattr };
+ 
+ # Restrict socket ioctls. Either 1. disallow privileged ioctls, 2. disallow the
+ # ioctl permission, or 3. disallow the socket class.
+-neverallowxperm isolated_app domain:{ rawip_socket tcp_socket udp_socket } ioctl priv_sock_ioctls;
+-neverallow isolated_app *:{ netlink_route_socket netlink_selinux_socket } ioctl;
++#neverallowxperm isolated_app domain:{ rawip_socket tcp_socket udp_socket } ioctl priv_sock_ioctls;
++#neverallow isolated_app *:{ netlink_route_socket netlink_selinux_socket } ioctl;
+ neverallow isolated_app *:{
+   socket netlink_socket packet_socket key_socket appletalk_socket
+   netlink_firewall_socket netlink_tcpdiag_socket netlink_nflog_socket
+diff --git a/keystore.te b/keystore.te
+index 9dca43c..fdbfced 100644
+--- a/keystore.te
++++ b/keystore.te
+@@ -23,7 +23,7 @@ selinux_check_access(keystore)
+ ### Protect ourself from others
+ ###
+ 
+-neverallow { domain -keystore } keystore_data_file:dir ~{ open create read getattr setattr search relabelto ioctl };
++#neverallow { domain -keystore } keystore_data_file:dir ~{ open create read getattr setattr search relabelto ioctl };
+ neverallow { domain -keystore } keystore_data_file:notdevfile_class_set ~{ relabelto getattr };
+ 
+ neverallow { domain -keystore -init } keystore_data_file:dir *;
+diff --git a/mediadrmserver.te b/mediadrmserver.te
+index d9368ad..3ef8830 100644
+--- a/mediadrmserver.te
++++ b/mediadrmserver.te
+@@ -52,8 +52,8 @@ allow mediadrmserver processinfo_service:service_manager find;
+ allow mediadrmserver surfaceflinger_service:service_manager find;
+ 
+ # only allow unprivileged socket ioctl commands
+-allowxperm mediadrmserver self:{ rawip_socket tcp_socket udp_socket }
+-  ioctl { unpriv_sock_ioctls unpriv_tty_ioctls };
++#allowxperm mediadrmserver self:{ rawip_socket tcp_socket udp_socket }
++#  ioctl { unpriv_sock_ioctls unpriv_tty_ioctls };
+ 
+ ###
+ ### neverallow rules
+@@ -64,4 +64,4 @@ allowxperm mediadrmserver self:{ rawip_socket tcp_socket udp_socket }
+ neverallow mediadrmserver { file_type fs_type }:file execute_no_trans;
+ 
+ # do not allow privileged socket ioctl commands
+-neverallowxperm mediadrmserver domain:{ rawip_socket tcp_socket udp_socket } ioctl priv_sock_ioctls;
++#neverallowxperm mediadrmserver domain:{ rawip_socket tcp_socket udp_socket } ioctl priv_sock_ioctls;
+diff --git a/mediaserver.te b/mediaserver.te
+index 661bdee..b55deb7 100644
+--- a/mediaserver.te
++++ b/mediaserver.te
+@@ -117,8 +117,8 @@ allow mediaserver drmserver:drmservice {
+ };
+ 
+ # only allow unprivileged socket ioctl commands
+-allowxperm mediaserver self:{ rawip_socket tcp_socket udp_socket }
+-  ioctl { unpriv_sock_ioctls unpriv_tty_ioctls };
++#allowxperm mediaserver self:{ rawip_socket tcp_socket udp_socket }
++#  ioctl { unpriv_sock_ioctls unpriv_tty_ioctls };
+ 
+ # Access to /data/media.
+ # This should be removed if sdcardfs is modified to alter the secontext for its
+@@ -127,7 +127,7 @@ allow mediaserver media_rw_data_file:dir create_dir_perms;
+ allow mediaserver media_rw_data_file:file create_file_perms;
+ 
+ # Access to /data/preloads
+-allow mediaserver preloads_data_file:file { getattr read ioctl };
++#allow mediaserver preloads_data_file:file { getattr read ioctl };
+ 
+ ###
+ ### neverallow rules
+@@ -138,7 +138,7 @@ allow mediaserver preloads_data_file:file { getattr read ioctl };
+ neverallow mediaserver { file_type fs_type }:file execute_no_trans;
+ 
+ # do not allow privileged socket ioctl commands
+-neverallowxperm mediaserver domain:{ rawip_socket tcp_socket udp_socket } ioctl priv_sock_ioctls;
++#neverallowxperm mediaserver domain:{ rawip_socket tcp_socket udp_socket } ioctl priv_sock_ioctls;
+ 
+ # Themed resources (i.e. composed icons)
+ allow mediaserver theme_data_file:dir r_dir_perms;
+diff --git a/neverallow_macros b/neverallow_macros
+index b36cceb..42fba36 100644
+--- a/neverallow_macros
++++ b/neverallow_macros
+@@ -1,6 +1,6 @@
+ #
+ # Common neverallow permissions
+ define(`no_w_file_perms', `{ append create link unlink relabelfrom rename setattr write }')
+-define(`no_rw_file_perms', `{ no_w_file_perms open read ioctl lock }')
++define(`no_rw_file_perms', `{ no_w_file_perms open read lock }')
+ define(`no_x_file_perms', `{ execute execute_no_trans }')
+ define(`no_w_dir_perms',  `{ add_name create link relabelfrom remove_name rename reparent rmdir setattr write }')
+diff --git a/priv_app.te b/priv_app.te
+index 7b21e28..601f327 100644
+--- a/priv_app.te
++++ b/priv_app.te
+@@ -91,7 +91,7 @@ allow priv_app sysfs_zram:file r_file_perms;
+ allow priv_app sysfs_mac_address:file { getattr read open };
+ 
+ # access the mac address
+-allowxperm priv_app self:udp_socket ioctl SIOCGIFHWADDR;
++#allowxperm priv_app self:udp_socket ioctl SIOCGIFHWADDR;
+ 
+ # Allow GMS core to communicate with update_engine for A/B update.
+ binder_call(priv_app, update_engine)
+diff --git a/runas.te b/runas.te
+index 4fa686a..5eb6ac7 100644
+--- a/runas.te
++++ b/runas.te
+@@ -6,7 +6,7 @@ domain_auto_trans(shell, runas_exec, runas)
+ allow runas adbd:process sigchld;
+ allow runas shell:fd use;
+ allow runas shell:fifo_file { read write };
+-allow runas devpts:chr_file { read write ioctl };
++#allow runas devpts:chr_file { read write ioctl };
+ allow runas shell_data_file:file { read write };
+ 
+ # run-as reads package information.
+diff --git a/sgdisk.te b/sgdisk.te
+index 43636d4..48cdd47 100644
+--- a/sgdisk.te
++++ b/sgdisk.te
+@@ -7,7 +7,7 @@ allow sgdisk block_device:dir search;
+ allow sgdisk vold_device:blk_file rw_file_perms;
+ 
+ # Inherit and use pty created by android_fork_execvp()
+-allow sgdisk devpts:chr_file { read write ioctl getattr };
++#allow sgdisk devpts:chr_file { read write ioctl getattr };
+ 
+ # Allow stdin/out back to vold
+ allow sgdisk vold:fd use;
+diff --git a/shell.te b/shell.te
+index 3e95b46..7ed52cb 100644
+--- a/shell.te
++++ b/shell.te
+@@ -150,4 +150,4 @@ allow shell media_rw_data_file:file create_file_perms;
+ neverallow shell file_type:file link;
+ 
+ # Do not allow privileged socket ioctl commands
+-neverallowxperm shell domain:{ rawip_socket tcp_socket udp_socket } ioctl priv_sock_ioctls;
++#neverallowxperm shell domain:{ rawip_socket tcp_socket udp_socket } ioctl priv_sock_ioctls;
+diff --git a/system_server.te b/system_server.te
+index 4b00ede..d7a1aad 100644
+--- a/system_server.te
++++ b/system_server.te
+@@ -510,7 +510,7 @@ userdebug_or_eng(`
+ 
+ # For AppFuse.
+ allow system_server vold:fd use;
+-allow system_server fuse_device:chr_file { read write ioctl getattr };
++#allow system_server fuse_device:chr_file { read write ioctl getattr };
+ 
+ # For configuring sdcardfs
+ allow system_server configfs:dir { create_dir_perms };
+@@ -520,7 +520,7 @@ allow system_server configfs:file { getattr open unlink write };
+ # Used for e.g. jdwp.
+ allow system_server adbd:unix_stream_socket connectto;
+ allow system_server adbd:fd use;
+-allow system_server adbd:unix_stream_socket { getattr getopt ioctl read write shutdown };
++#allow system_server adbd:unix_stream_socket { getattr getopt ioctl read write shutdown };
+ 
+ # Access to /data/media.
+ # This should be removed if sdcardfs is modified to alter the secontext for its
+diff --git a/te_macros b/te_macros
+index 488ef9b..0d02e90 100644
+--- a/te_macros
++++ b/te_macros
+@@ -278,7 +278,7 @@ type $1_devpts, fs_type;
+ # Label the pty with the unique type when created.
+ type_transition $1 devpts:chr_file $1_devpts;
+ # Allow use of the pty after creation.
+-allow $1 $1_devpts:chr_file { open getattr read write ioctl };
++#allow $1 $1_devpts:chr_file { open getattr read write ioctl };
+ # Note: devpts:dir search and ptmx_device:chr_file rw_file_perms
+ # allowed to everyone via domain.te.
+ ')
+diff --git a/toolbox.te b/toolbox.te
+index d7192bb..adee66b 100644
+--- a/toolbox.te
++++ b/toolbox.te
+@@ -8,10 +8,10 @@ init_daemon_domain(toolbox)
+ 
+ # /dev/__null__ created by init prior to policy load,
+ # open fd inherited by fsck.
+-allow toolbox tmpfs:chr_file { read write ioctl };
++#allow toolbox tmpfs:chr_file { read write ioctl };
+ 
+ # Inherit and use pty created by android_fork_execvp_ext().
+-allow toolbox devpts:chr_file { read write getattr ioctl };
++#allow toolbox devpts:chr_file { read write getattr ioctl };
+ 
+ # mkswap-specific.
+ # Read/write block devices used for swap partitions.
+diff --git a/untrusted_app.te b/untrusted_app.te
+index 1089e61..8941a47 100644
+--- a/untrusted_app.te
++++ b/untrusted_app.te
+@@ -161,8 +161,8 @@ neverallow untrusted_app sysfs_mac_address:file no_rw_file_perms;
+ 
+ # Restrict socket ioctls. Either 1. disallow privileged ioctls, 2. disallow the
+ # ioctl permission, or 3. disallow the socket class.
+-neverallowxperm untrusted_app domain:{ rawip_socket tcp_socket udp_socket } ioctl priv_sock_ioctls;
+-neverallow untrusted_app *:{ netlink_route_socket netlink_selinux_socket } ioctl;
++#neverallowxperm untrusted_app domain:{ rawip_socket tcp_socket udp_socket } ioctl priv_sock_ioctls;
++#neverallow untrusted_app *:{ netlink_route_socket netlink_selinux_socket } ioctl;
+ neverallow untrusted_app *:{
+   socket netlink_socket packet_socket key_socket appletalk_socket
+   netlink_firewall_socket netlink_tcpdiag_socket netlink_nflog_socket
+diff --git a/vold.te b/vold.te
+index a2b55bb..86a0da0 100644
+--- a/vold.te
++++ b/vold.te
+@@ -199,7 +199,7 @@ allow vold user_profile_foreign_dex_data_file:dir { getattr setattr };
+ # Raw writes to misc block device
+ allow vold misc_block_device:blk_file w_file_perms;
+ 
+-neverallow { domain -vold } vold_data_file:dir ~{ open create read getattr setattr search relabelto ioctl };
++#neverallow { domain -vold } vold_data_file:dir ~{ open create read getattr setattr search relabelto ioctl };
+ neverallow { domain -vold } vold_data_file:notdevfile_class_set ~{ relabelto getattr };
+ neverallow { domain -vold -init } vold_data_file:dir *;
+ neverallow { domain -vold -init } vold_data_file:notdevfile_class_set *;
+-- 
+2.13.3
+
