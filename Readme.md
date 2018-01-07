@@ -1,6 +1,6 @@
 Leagoo Z5
 ======================
-![Leagoo](http://miix4droid.epizy.com/wp-content/uploads/img/Leagoo-Z5.jpg "Leagoo Z5")
+![Leagoo Z5](http://miix4droid.epizy.com/wp-content/uploads/img/Leagoo-Z5.jpg)
 
 |      Basic      |    Spec Sheet        |
 |----------------:|:---------------------|
