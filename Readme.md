@@ -1,6 +1,6 @@
 Leagoo Z5
 ======================
-![Leagoo Z5](https://image4.geekbuying.com/ggo_pic/2016-05-25/2016052509403149tvgs5.jpg)
+![Leagoo Z5](https://image4.geekbuying.com/ggo_pic/2016-05-25/2016052509403149tvgs5.jpg "Leagoo Z5")
 
 |      Basic      |    Spec Sheet        |
 |----------------:|:---------------------|
