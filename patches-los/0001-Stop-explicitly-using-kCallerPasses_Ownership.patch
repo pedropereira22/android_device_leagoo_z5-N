@@ -1,0 +1,42 @@
+From b056b5e56a01e37a6f241d8fe58c92ec96500459 Mon Sep 17 00:00:00 2001
+From: Pedro Pereira <pedropereirex@gmail.com>
+Date: Tue, 9 Jan 2018 21:24:15 +0000
+Subject: [PATCH] Stop explicitly using kCallerPasses_Ownership
+
+Change-Id: Iafde63b5e271f9ff10f14ddd2baa575b9a9c3160
+---
+ core/jni/android/graphics/BitmapFactory.cpp | 3 +--
+ media/jni/android_media_ExifInterface.cpp   | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/core/jni/android/graphics/BitmapFactory.cpp b/core/jni/android/graphics/BitmapFactory.cpp
+index 486a278eb60..0a143610ebd 100644
+--- a/core/jni/android/graphics/BitmapFactory.cpp
++++ b/core/jni/android/graphics/BitmapFactory.cpp
+@@ -587,8 +587,7 @@ static jobject nativeDecodeFileDescriptor(JNIEnv* env, jobject clazz, jobject fi
+         return nullObjectReturn("Could not open file");
+     }
+ 
+-    std::unique_ptr<SkFILEStream> fileStream(new SkFILEStream(file,
+-                SkFILEStream::kCallerPasses_Ownership));
++    std::unique_ptr<SkFILEStream> fileStream(new SkFILEStream(file));
+ 
+     // If there is no offset for the file descriptor, we use SkFILEStream directly.
+     if (::lseek(descriptor, 0, SEEK_CUR) == 0) {
+diff --git a/media/jni/android_media_ExifInterface.cpp b/media/jni/android_media_ExifInterface.cpp
+index 731deae1460..20f9ef6d6a4 100644
+--- a/media/jni/android_media_ExifInterface.cpp
++++ b/media/jni/android_media_ExifInterface.cpp
+@@ -390,8 +390,7 @@ static jobject ExifInterface_getRawAttributesFromFileDescriptor(
+     // Rewind the file descriptor.
+     fseek(file, 0L, SEEK_SET);
+ 
+-    std::unique_ptr<SkFILEStream> fileStream(new SkFILEStream(file,
+-                SkFILEStream::kCallerPasses_Ownership));
++    std::unique_ptr<SkFILEStream> fileStream(new SkFILEStream(file));
+     return getRawAttributes(env, fileStream.get(), false);
+ }
+ 
+-- 
+2.13.3
+
