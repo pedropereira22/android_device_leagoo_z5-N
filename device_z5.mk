@@ -154,9 +154,10 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 PRODUCT_NAME := full_z5
-PRODUCT_DEVICE := z5
+# PRODUCT_DEVICE := z5
 
 TARGET_SCREEN_HEIGHT := 854
 TARGET_SCREEN_WIDTH := 480
 
 $(call inherit-product, frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk)
+

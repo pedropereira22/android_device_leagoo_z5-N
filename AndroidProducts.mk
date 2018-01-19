@@ -1,2 +1,2 @@
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/device_z5.mk
+    $(LOCAL_DIR)/aosp_z5.mk
