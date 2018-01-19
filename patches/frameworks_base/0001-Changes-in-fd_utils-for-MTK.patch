@@ -1,0 +1,25 @@
+From 751e3dfe7125e40def0d9a79d4e51299c6d5dd10 Mon Sep 17 00:00:00 2001
+From: Pedro Pereira <pedropereirex@gmail.com>
+Date: Fri, 19 Jan 2018 19:42:25 +0000
+Subject: [PATCH] Changes in fd_utils for MTK
+
+Change-Id: Icd6758ecea8e397f4d888da1d74701cc1bb7b64e
+---
+ core/jni/fd_utils-inl.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/core/jni/fd_utils-inl.h b/core/jni/fd_utils-inl.h
+index e1ed541..3c0fa79 100644
+--- a/core/jni/fd_utils-inl.h
++++ b/core/jni/fd_utils-inl.h
+@@ -56,6 +56,7 @@ static const char* kPathWhitelist[] = {
+   "/dev/urandom",
+   "/dev/ion",
+   "/dev/dri/renderD129", // Fixes b/31172436
++  "/proc/ged", // MTK add
+ };
+ 
+ static const char* kFdPath = "/proc/self/fd";
+-- 
+2.7.4
+
