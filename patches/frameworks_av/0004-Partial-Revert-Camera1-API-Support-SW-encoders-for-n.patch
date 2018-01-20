@@ -1,0 +1,47 @@
+From 1be88cd74616da2e0251d09fcfdbd726ac2789ab Mon Sep 17 00:00:00 2001
+From: Pedro Pereira <pedropereirex@gmail.com>
+Date: Sat, 20 Jan 2018 20:24:52 +0000
+Subject: [PATCH] Partial Revert > Camera1 API: Support SW encoders for new
+
+---
+ include/media/stagefright/CameraSource.h |  2 +-
+ media/libstagefright/CameraSource.cpp    | 10 ----------
+ 2 files changed, 1 insertion(+), 11 deletions(-)
+
+diff --git a/include/media/stagefright/CameraSource.h b/include/media/stagefright/CameraSource.h
+index c2e75a6..f39688f 100644
+--- a/include/media/stagefright/CameraSource.h
++++ b/include/media/stagefright/CameraSource.h
+@@ -89,7 +89,7 @@ public:
+                                           Size videoSize,
+                                           int32_t frameRate,
+                                           const sp<IGraphicBufferProducer>& surface,
+-                                          bool storeMetaDataInVideoBuffers = true);
++                                          bool storeMetaDataInVideoBuffers = false);
+ 
+     virtual ~CameraSource();
+ 
+diff --git a/media/libstagefright/CameraSource.cpp b/media/libstagefright/CameraSource.cpp
+index b7d9965..a7abb4e 100644
+--- a/media/libstagefright/CameraSource.cpp
++++ b/media/libstagefright/CameraSource.cpp
+@@ -722,16 +722,6 @@ status_t CameraSource::startCameraRecording() {
+             }
+         }
+ 
+-        err = mCamera->sendCommand(
+-            CAMERA_CMD_SET_VIDEO_FORMAT, mEncoderFormat, mEncoderDataSpace);
+-
+-        // This could happen for CameraHAL1 clients; thus the failure is
+-        // not a fatal error
+-        if (err != OK) {
+-            ALOGW("Failed to set video encoder format/dataspace to %d, %d due to %d",
+-                    mEncoderFormat, mEncoderDataSpace, err);
+-        }
+-
+         // Create memory heap to store buffers as VideoNativeMetadata.
+         createVideoBufferMemoryHeap(sizeof(VideoNativeHandleMetadata), kDefaultVideoBufferCount);
+     }
+-- 
+2.7.4
+

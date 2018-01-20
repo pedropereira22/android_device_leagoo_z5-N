@@ -1,0 +1,26 @@
+From 665df1f1ec3e960a0ee840dd459d2827f624f0c4 Mon Sep 17 00:00:00 2001
+From: Pedro Pereira <pedropereirex@gmail.com>
+Date: Sat, 20 Jan 2018 20:27:16 +0000
+Subject: [PATCH] Partial Revert > Camera1 API: Support SW encoders for
+ new-part2
+
+---
+ media/libmediaplayerservice/StagefrightRecorder.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/media/libmediaplayerservice/StagefrightRecorder.cpp b/media/libmediaplayerservice/StagefrightRecorder.cpp
+index 881c032..72984a4 100644
+--- a/media/libmediaplayerservice/StagefrightRecorder.cpp
++++ b/media/libmediaplayerservice/StagefrightRecorder.cpp
+@@ -1459,7 +1459,7 @@ status_t StagefrightRecorder::setupCameraSource(
+         *cameraSource = CameraSource::CreateFromCamera(
+                 mCamera, mCameraProxy, mCameraId, mClientName, mClientUid, mClientPid,
+                 videoSize, mFrameRate,
+-                mPreviewSurface);
++                mPreviewSurface, false); // [*] Decker
+     }
+     mCamera.clear();
+     mCameraProxy.clear();
+-- 
+2.7.4
+
