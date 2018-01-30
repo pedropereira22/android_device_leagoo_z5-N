@@ -17,9 +17,6 @@ Leagoo Z5
 |     Rear Camera   | 5MPx, Dual LED Flash |
 | Dimensions (H/L/W)| 143.8 x 71.8 x 9.8 mm|
 |       Weight:     | 147 g                |
-|   Frontal Camera  | 2MPx                 |
-|   Frontal Camera  | 2MPx                 |
-|   Frontal Camera  | 2MPx                 |
 
 
 Adapted from this Device tree: https://github.com/rock12/android_device_Doogee_X5
