@@ -24,7 +24,7 @@ PRODUCT_COPY_FILES := device/sample/etc/apns-full-conf.xml:system/etc/apns-conf.
 $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
 
 PRODUCT_DEVICE := z5
-PRODUCT_NAME := lineage_z5
+PRODUCT_NAME := full_z5
 PRODUCT_BRAND := Leagoo
 PRODUCT_MODEL := Leagoo Z5
 PRODUCT_MANUFACTURER := Leagoo
@@ -34,5 +34,3 @@ $(call inherit-product-if-exists, vendor/leagoo/z5/device-vendor.mk)
 
 PRODUCT_NAME := aosp_z5
 
-PRODUCT_PACKAGES += \
-    Launcher3
