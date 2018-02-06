@@ -15,6 +15,5 @@ PRODUCT_MODEL := Leagoo Z5
 PRODUCT_MANUFACTURER := Leagoo
 
 PRODUCT_BUILD_PROP_OVERRIDES += \
-    PRODUCT_NAME=hammerhead \
-    BUILD_FINGERPRINT=Leagoo/aosp_z5/z5:7.1.2/NJH47F/pedrop10232118:userdebug/release-keys \
-    PRIVATE_BUILD_DESC="aosp_z5-userdebug 7.1.2 NJH47F eng.pedrop.20171023.211813 release-keys"
+    BUILD_FINGERPRINT=Leagoo/aosp_z5/z5:7.1.2/NJH47F/pedro_02051933:userdebug/release-keys \
+    PRIVATE_BUILD_DESC="aosp_z5-userdebug 7.1.2 NJH47F eng.pedro_.20180205.193358 release-keys"
