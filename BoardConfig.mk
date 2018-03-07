@@ -131,10 +131,15 @@ TARGET_LDPRELOAD += libxlog.so:libmtk_symbols.so
 
 # Deodex ? = false
 
-ODEX := true
+ODEX := false
 
 ifeq ($(ODEX),true)
     WITH_DEXPREOPT := true
     DISABLE_DEXPREOPT := false
+endif
+
+ifeq ($(ODEX),false)
+    WITH_DEXPREOPT := false
+    DISABLE_DEXPREOPT := true
 endif
 
