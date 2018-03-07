@@ -129,3 +129,12 @@ BOARD_SECCOMP_POLICY += device/leagoo/z5/seccomp
 BLOCK_BASED_OTA := false
 TARGET_LDPRELOAD += libxlog.so:libmtk_symbols.so
 
+# Deodex ? = false
+
+ODEX := true
+
+ifeq ($(ODEX),true)
+    WITH_DEXPREOPT := true
+    DISABLE_DEXPREOPT := false
+endif
+
