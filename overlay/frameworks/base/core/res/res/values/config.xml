@@ -191,24 +191,25 @@
          than the size of the config_autoBrightnessLevels array.
          The brightness values must be between 0 and 255 and be non-decreasing.
          This must be overridden in platform specific overlays -->
+	
     <integer-array name="config_autoBrightnessLcdBacklightValues">
-        <item>30</item>
-        <item>40</item>
-        <item>50</item>
-        <item>60</item>
-        <item>70</item>
-        <item>80</item>
-        <item>102</item>
-        <item>102</item>
-        <item>102</item>
-        <item>102</item>
-        <item>102</item>
-        <item>180</item>
-        <item>200</item>
-        <item>210</item>
-        <item>230</item>
-        <item>255</item>
-    </integer-array>
+	<item>5</item>
+	<item>10</item>
+	<item>15</item>
+	<item>20</item>
+	<item>25</item>
+	<item>30</item>
+	<item>35</item>
+	<item>40</item>
+	<item>45</item>
+	<item>50</item>
+	<item>55</item>
+	<item>60</item>
+	<item>70</item>
+	<item>80</item>
+	<item>90</item>
+	<item>100</item>
+   </integer-array>
 
     <!-- Safe headphone volume index. When music stream volume is below this index
     the SPL on headphone output is compliant to EN 60950 requirements for portable music
