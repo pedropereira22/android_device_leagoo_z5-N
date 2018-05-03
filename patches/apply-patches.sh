@@ -23,7 +23,7 @@ cd ../..
 cd system/netd
 patch -p1 < ../../device/leagoo/z5/patches/0010-wifi-tethering-fix.patch
 cd ../..
-cd packages/apps/Settings
-git apply -v ../../../device/leagoo/z5/patches/0001-Lunch-MiraVision-from-Settings.patch
-cd ../../..
+#cd packages/apps/Settings
+#git apply -v ../../../device/leagoo/z5/patches/0001-Lunch-MiraVision-from-Settings.patch
+#cd ../../..
 

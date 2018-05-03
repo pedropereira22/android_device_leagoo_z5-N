@@ -1,4 +1,5 @@
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 
 # These additionals go to /default.prop
@@ -151,8 +152,15 @@ PRODUCT_PACKAGES += \
 	gps.mt6580
 
 # MiraVision
-PRODUCT_PACKAGES += \
-	MiraVision
+MIRAVISION := true
+
+##################################
+#    **Odex Configuration**
+#      true = Odexed Rom
+#      false = Deodexed Rom
+#      null = Rom source decides
+##################################
+ODEX := false
 
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 PRODUCT_NAME := full_z5

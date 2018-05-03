@@ -129,15 +129,6 @@ BOARD_SECCOMP_POLICY += device/leagoo/z5/seccomp
 BLOCK_BASED_OTA := false
 TARGET_LDPRELOAD += libxlog.so:libmtk_symbols.so
 
-
-##################################
-#    **Odex Configuration**
-#      true = Odexed Rom
-#      false = Deodexed Rom
-#      null = Rom source decides
-##################################
-ODEX := false
-
 ifeq ($(ODEX),true)
     WITH_DEXPREOPT := true
     DISABLE_DEXPREOPT := false
@@ -146,5 +137,10 @@ endif
 ifeq ($(ODEX),false)
     WITH_DEXPREOPT := false
     DISABLE_DEXPREOPT := true
+endif
+
+ifeq ($(MIRAVISION),true)
+	PRODUCT_PACKAGES += \
+		MiraVision
 endif
 

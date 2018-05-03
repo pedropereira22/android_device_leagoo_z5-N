@@ -8,7 +8,8 @@
        <application android:label="@string/mira_vision_title"
             android:taskAffinity=""
             android:theme="@android:style/Theme.Material.Settings"
-            android:supportsRtl="true">
+            android:supportsRtl="true"
+			android:icon="@mipmap/ic_launcher_mira"
 
         <activity android:name="MiraVisionActivity"
                 android:label="@string/mira_vision_title"
@@ -16,7 +17,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="com.android.settings.MIRA_VISION" />
-                <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+                <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
