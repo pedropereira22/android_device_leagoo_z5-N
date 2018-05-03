@@ -113,7 +113,7 @@ TW_REBOOT_BOOTLOADER := true
 TW_REBOOT_RECOVERY := true
 TW_HAS_DOWNLOAD_MODE := true
 TW_EXCLUDE_SUPERSU := true
-TW_USE_TOOLBOX := true
+TW_USE_TOOLBOX := false
 
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/virtual/android_usb/android0/f_mass_storage/lun%d/file"
 
