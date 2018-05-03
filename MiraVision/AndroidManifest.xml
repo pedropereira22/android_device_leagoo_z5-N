@@ -9,7 +9,7 @@
             android:taskAffinity=""
             android:theme="@android:style/Theme.Material.Settings"
             android:supportsRtl="true"
-			android:icon="@mipmap/ic_launcher_mira"
+	    android:icon="@mipmap/ic_launcher_mira">
 
         <activity android:name="MiraVisionActivity"
                 android:label="@string/mira_vision_title"
