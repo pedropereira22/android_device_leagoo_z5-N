@@ -1,6 +1,9 @@
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 
+# MiraVision
+MIRAVISION := false
+
 # These additionals go to /default.prop
 ADDITIONAL_DEFAULT_PROPERTIES += ro.secure=0 \
 ro.allow.mock.location=1 \
@@ -150,20 +153,14 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
 	gps.mt6580
 
-# MiraVision
-MIRAVISION := true
-
-##################################
-#    **Odex Configuration**
-#      true = Odexed Rom
-#      false = Deodexed Rom
-#      null = Rom source decides
-##################################
-ODEX := false
-
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 PRODUCT_NAME := full_z5
 # PRODUCT_DEVICE := z5
+
+ifeq ($(MIRAVISION),true)
+	PRODUCT_PACKAGES += \
+		MiraVision
+endif
 
 TARGET_SCREEN_HEIGHT := 854
 TARGET_SCREEN_WIDTH := 480

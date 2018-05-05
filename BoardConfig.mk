@@ -3,6 +3,17 @@
 
 TARGET_SPECIFIC_HEADER_PATH := device/leagoo/z5/include
 
+# MiraVision
+MIRAVISION := true
+
+##################################
+#    **Odex Configuration**
+#      true = Odexed Rom
+#      false = Deodexed Rom
+#      null = Rom source decides
+##################################
+ODEX := false
+
 # Platform
 TARGET_BOARD_PLATFORM := mt6580
 TARGET_NO_BOOTLOADER := true
@@ -137,10 +148,5 @@ endif
 ifeq ($(ODEX),false)
     WITH_DEXPREOPT := false
     DISABLE_DEXPREOPT := true
-endif
-
-ifeq ($(MIRAVISION),true)
-	PRODUCT_PACKAGES += \
-		MiraVision
 endif
 
