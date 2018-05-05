@@ -3,9 +3,6 @@
 
 TARGET_SPECIFIC_HEADER_PATH := device/leagoo/z5/include
 
-# MiraVision
-MIRAVISION := true
-
 ##################################
 #    **Odex Configuration**
 #      true = Odexed Rom
