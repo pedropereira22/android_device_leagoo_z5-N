@@ -2,6 +2,8 @@ Leagoo Z5
 ======================
 ![Leagoo Z5](https://image4.geekbuying.com/ggo_pic/2016-05-25/2016052509403149tvgs5.jpg "Leagoo Z5")
 
+Note: Miravision is included but disabled by default, to enable, set "MiraVision" to true in device_z5.mk.
+
 |       Basic       |    Spec Sheet        |
 |------------------:|:---------------------|
 |      Chipset      | MT6580M              |
